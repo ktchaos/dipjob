@@ -20,6 +20,7 @@ def primeira_questao():
     rgb_image , _ = converter.YIQ_2_RGB(yiq_image_array)
     rgb_image.show()
 
+
 ### QUESTAO 2) Filtros negativos
 def segunda_questao():
     image_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app/assets/dancer.jpg'
@@ -41,7 +42,18 @@ def segunda_questao():
     negative_B_image = filter.apply_negative_filter(image_path=image_path, B=True)
     # negative_B_image.show()
 
-    ## . Na banda Y
-
+    ## 4. Na banda Y
     negative_Y_image = filter.apply_negative_filter_in_y(image_path=image_path)
     # negative_Y_image.show()
+
+
+## QUESTAO 4) Filtro da MEDIANA sobre R, G e B
+def quarta_questao():
+    image_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app/assets/dancer.jpg'
+    original_image = Image.open(image_path)
+    original_image.show()
+
+    filter = Filter()
+    img, preprocessed, output = filter.apply_median_filter(image_path=image_path, filter_shape=(5, 7), zero_padding=False)
+    tranf_image = Image.fromarray(output.astype('uint8'))
+    tranf_image.show()

@@ -27,14 +27,19 @@ class Filter:
     def apply_negative_filter_in_y(self, image_path):
         converter = Converter()
 
+        # Converte a de rgb para YIQ
         _, yiq_arr = converter.RGB_2_YIQ(image_path=image_path)
 
+        # faz uma copia do array que foi resultado do processo acima
         yiq = yiq_arr.copy()
 
+        # negativo
         yiq[:,:,0] = 255 - yiq[:,:,0]
 
+        # converte de volta de yiq para rgb
         rgb_img, _ =  converter.YIQ_2_RGB(arr_img=yiq)
 
+        # faz uma copia e retorna
         rgb = rgb_img.copy()
         return rgb
     

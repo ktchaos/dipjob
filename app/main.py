@@ -78,24 +78,24 @@ def terceira_questao():
     original_image.show()
 
     # Aplicando filtro da média (box)
-    c = Correlator()
+    c_1 = Correlator()
     filter_mask = np.loadtxt(
         root_path + "/filters/media.txt", encoding=None, delimiter=",")
     matrix = np.array(filter_mask)
     mask = matrix/matrix.size
 
-    _, _, output = c.apply_correlation(
+    _, _, output = c_1.apply_correlation(
         image_path=image_path, filter_matrix=mask, zero_padding=True)
     transf_img = Image.fromarray(output.astype('uint8'))
     transf_img.show()
 
     # Aplicando filtro Emboss
-    c = Correlator()
+    c_2 = Correlator()
     filter_mask = np.loadtxt(
-        "/filters/emboss.txt", encoding=None, delimiter=",")
+        root_path + "/filters/emboss.txt", encoding=None, delimiter=",")
     matrix = np.array(filter_mask)
 
-    _, _, output = c.apply_correlation(
+    _, _, output = c_2.apply_correlation(
         image_path=image_path, filter_matrix=matrix, zero_padding=True)
     abs_img = np.abs(output)
     offset = 128

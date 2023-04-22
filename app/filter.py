@@ -1,6 +1,8 @@
 from PIL import Image
 import numpy as np
 
+from math import sqrt
+
 from converter import Converter
 from correlator import Correlator
 
@@ -71,3 +73,48 @@ class Filter:
                     output[i,j,k] = np.median(preprocessed_img[i: i + filter_shape[0], j: j + filter_shape[1], k])
         
         return self.image, preprocessed_img, output
+
+    def apply_sobel_normalized_filter(self, root_path, image_path, zero_padding=True):
+        c = Correlator()
+
+        ## x
+        filter_mask_x = np.loadtxt(root_path + "/filters/sobel-x.txt", encoding=None, delimiter=",")
+        mask_x = np.array(filter_mask_x)
+
+        _, _, output = c.apply_correlation(image_path=image_path, filter_matrix=mask_x, zero_padding=zero_padding)
+        output_x = output
+        del output
+
+        transf_img_x = Image.fromarray(output_x.astype('uint8'))
+        transf_img_x.show()
+
+        ## y
+        filter_mask_y = np.loadtxt(root_path + "/filters/sobel-y.txt", encoding=None, delimiter=",")
+        mask_y = np.array(filter_mask_y)
+
+        _, _, output = c.apply_correlation(image_path=image_path, filter_matrix=mask_y, zero_padding=zero_padding)
+        output_y = output
+        del output
+
+        transf_img_y = Image.fromarray(output_y.astype('uint8'))
+        transf_img_y.show()
+
+        ## new image
+        w, h = transf_img_x.size
+
+        filtered = Image.new('RGB', (w, h))
+
+        for i in range(w):
+            for j in range(h):
+                values = []
+
+                for k in range(3):
+                    value = sqrt(
+                        transf_img_x.getpixel((i, j))[k] ** 2 + transf_img_y.getpixel((i, j))[k] ** 2
+                    )
+                    value = int(min(value, 255))
+                    values.append(value)
+                
+                filtered.putpixel((i, j), (values[0], values[1], values[2]))
+
+        filtered.show()

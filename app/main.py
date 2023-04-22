@@ -1,14 +1,32 @@
 import numpy as np
+from sys import argv
 from PIL import Image
 
 from converter import Converter
 from filter import Filter
 from correlator import Correlator
 
+catarina_root_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app'
+arthur_root_path = '/Users/arthurruan/www/ufpb/dipjob/app'
+anderson_root_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app'
+
+root_profile = argv[1]
+root_path = ''
+
+match root_profile:
+    case 'anderson':
+        root_path = anderson_root_path
+    case 'arthur':
+        root_path = arthur_root_path
+    case 'catarina':
+        root_path = catarina_root_path
+    case _:
+        raise ValueError('root profile inválido!')
+
 ### QUESTAO 1) Conversão RGB-YIQ-RGB
 def primeira_questao():
     # 1. Carregar imagem de teste
-    orig_image = Image.open('/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app/assets/dancer.jpg')
+    orig_image = Image.open(root_path + '/assets/dancer.jpg')
     orig_image.show()
 
     # 2. Aplicar a conversão RGB para YIQ
@@ -24,7 +42,7 @@ def primeira_questao():
 
 ### QUESTAO 2) Filtros negativos
 def segunda_questao():
-    image_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app/assets/dancer.jpg'
+    image_path = root_path + '/assets/dancer.jpg'
     original_image = Image.open(image_path)
     original_image.show()
     
@@ -48,13 +66,13 @@ def segunda_questao():
 
 ## QUESTAO 3) Filtros com extensão por zeros
 def terceira_questao():
-    image_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app/assets/lenaverso.jpg'
+    image_path = root_path + '/assets/lenaverso.jpg'
     original_image = Image.open(image_path)
     original_image.show()
 
     # Aplicando filtro da média (box)
     c = Correlator()
-    filter_mask = np.loadtxt("/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app/filters/media.txt", encoding=None, delimiter=",")
+    filter_mask = np.loadtxt(root_path + "/filters/media.txt", encoding=None, delimiter=",")
     matrix = np.array(filter_mask)
     mask = matrix/matrix.size
 
@@ -66,7 +84,7 @@ def terceira_questao():
 
 ## QUESTAO 4) Filtro da MEDIANA sobre R, G e B
 def quarta_questao():
-    image_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app/assets/dancer.jpg'
+    image_path = root_path + '/assets/dancer.jpg'
     original_image = Image.open(image_path)
     original_image.show()
 
@@ -74,3 +92,21 @@ def quarta_questao():
     _, _, output = filter.apply_median_filter(image_path=image_path, filter_shape=(1, 1), zero_padding=False)
     tranf_image = Image.fromarray(output.astype('uint8'))
     tranf_image.show()
+
+## execução principal do programa
+question = argv[2]
+
+def main():
+    match question:
+        case '1':
+            primeira_questao()
+        case '2':
+            segunda_questao()
+        case '3':
+            terceira_questao()
+        case '4':
+            quarta_questao()
+        case _:
+            raise ValueError('Questão inválida!')
+
+main()

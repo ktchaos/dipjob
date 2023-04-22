@@ -90,6 +90,18 @@ def terceira_questao():
     transf_img.show()
 
     # Aplicando filtro Emboss
+    c = Correlator()
+    filter_mask = np.loadtxt(
+        "/filters/emboss.txt", encoding=None, delimiter=",")
+    matrix = np.array(filter_mask)
+
+    _, _, output = c.apply_correlation(
+        image_path=image_path, filter_matrix=matrix, zero_padding=True)
+    abs_img = np.abs(output)
+    offset = 128
+    filter_img = abs_img + offset
+    transf_img = Image.fromarray(filter_img.astype('uint8'))
+    transf_img.show()
 
 
 # QUESTAO 4) Filtro da MEDIANA sobre R, G e B

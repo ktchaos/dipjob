@@ -77,23 +77,19 @@ class Filter:
     def apply_sobel_normalized_filter(self, root_path, image_path, zero_padding=True):
         c = Correlator()
 
-        ## x
+        ## Aplicação do filtro de Sobel vertical Gx
         filter_mask_x = np.loadtxt(root_path + "/filters/sobel-x.txt", encoding=None, delimiter=",")
         mask_x = np.array(filter_mask_x)
 
-        _, _, output = c.apply_correlation(image_path=image_path, filter_matrix=mask_x, zero_padding=zero_padding)
-        output_x = output
-        del output
+        _, _, output_x = c.apply_correlation(image_path=image_path, filter_matrix=mask_x, zero_padding=zero_padding)
 
-        ## y
+        ## Aplicação do filtro de Sobel vertical Gy
         filter_mask_y = np.loadtxt(root_path + "/filters/sobel-y.txt", encoding=None, delimiter=",")
         mask_y = np.array(filter_mask_y)
 
-        _, _, output = c.apply_correlation(image_path=image_path, filter_matrix=mask_y, zero_padding=zero_padding)
-        output_y = output
-        del output
+        _, _, output_y = c.apply_correlation(image_path=image_path, filter_matrix=mask_y, zero_padding=zero_padding)
 
-        ## new image
+        ## Aplicação do filtro de Sobel normalizado
         h = output_x.shape[0]
         w = output_x.shape[1]
         output = np.zeros((h, w, 3))

@@ -2,7 +2,6 @@ from PIL import Image
 import numpy as np
 
 class Histogram:
-
     def expansion(self, image, L=255):
 
         image_array = np.array(image)
@@ -16,10 +15,10 @@ class Histogram:
 
         for i in range(h):
             for j in range(w):
-                    r = image_array[i, j]
-                    s = round(
-                        ((r - r_min) / (r_max - r_min)) * (L - 1)
-                    )
-                    output[i, j] = s
+                r = image_array[i, j]
+                s = round(
+                    ((r - r_min) / (r_max - r_min)) * (L - 1)
+                )
+                output[i, j] = s
 
         return output

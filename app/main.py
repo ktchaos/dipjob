@@ -103,6 +103,13 @@ def terceira_questao():
     transf_img = Image.fromarray(filter_img.astype('uint8'))
     transf_img.show()
 
+    # Aplicando Sobel normalizado
+    filter = Filter()
+    output = filter.apply_sobel_normalized_filter(root_path=root_path, image_path=image_path)
+    transf_img = Image.fromarray(output.astype('uint8'))
+    transf_img.show()
+
+
 
 # QUESTAO 4) Filtro da MEDIANA sobre R, G e B
 def quarta_questao():

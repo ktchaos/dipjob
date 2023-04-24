@@ -13,8 +13,10 @@ class Filter:
         self.output = None
 
     def apply_negative_filter(self, image_path, R=False, G=False, B=False):
+        # Transforma a imagem
         image = np.array(Image.open(image_path).convert('RGB'))
 
+        # Subtrai cada valor da cor de 255 em cada uma das bandas de acordo com a flag desejada
         if R:
             image[:, :, 0] = 255 - image[:, :, 0]
 
@@ -30,37 +32,42 @@ class Filter:
     def apply_negative_filter_in_y(self, image_path):
         converter = Converter()
 
-        # Converte a de rgb para YIQ
+        # Converte de RGB para YIQ
         _, yiq_arr = converter.RGB_2_YIQ(image_path=image_path)
 
-        # faz uma copia do array que foi resultado do processo acima
+        # Faz uma cópia do array que foi resultado do processo acima
         yiq = yiq_arr.copy()
 
-        # negativo
-        yiq[:, :, 0] = 255 - yiq[:, :, 0]
+        # Negativo!
+        yiq[:,:,0] = 255 - yiq[:,:,0]
 
-        # converte de volta de yiq para rgb
+        # Converte de volta de YIQ para RGB
         rgb_img, _ = converter.YIQ_2_RGB(arr_img=yiq)
 
-        # faz uma copia e retorna
+        # Faz uma copia da imagem e retorna
         rgb = rgb_img.copy()
         return rgb
 
-    def apply_median_filter(self, image_path, filter_shape=(3, 3), zero_padding=True):
+    def apply_median_filter(self, image_path, filter_shape=(3,3), zero_padding=True):
+        # Necessario um correlator para aplicar a correlação
         c = Correlator()
 
+        # Transforma em um array de RGB
         self.image = np.array(Image.open(image_path).convert('RGB'))
 
+        # Atribui a imagem em questao ao correlator
         c.image = self.image
 
+        # Calcula a quantidade de linhas e colunas que precisa ser adicionado
         vertical_padding = filter_shape[0]//2
         horizontal_padding = filter_shape[1]//2
 
+        # Se não tem nenhuma linha ou coluna para adicionar, significa que não é um array bidimensional
         if not horizontal_padding and not vertical_padding:
-            print(
-                "Could not execute padding due to filter shape. Try a Bi dimensional kernel.")
+            print("Não foi possível fazer a extensão por zeros, tente com uma máscara bidimensional.")
             zero_padding = False
 
+        # Se tiver extensão por zero, adiciona na variavel preprocessed_img
         if zero_padding:
             preprocessed_img = c.padding(horizontal_padding, vertical_padding)
             output = np.zeros((self.image.shape[0], self.image.shape[1], 3))
@@ -69,12 +76,15 @@ class Filter:
             output = np.zeros(
                 (self.image.shape[0] - 2 * vertical_padding, self.image.shape[1] - 2 * horizontal_padding, 3))
 
+        # Deslizando a máscara na imagem:
+        # Primeiro for é para percorrer em X
         for i in range(preprocessed_img.shape[0] - filter_shape[0]):
+            # Segundo for é para percorrer em Y
             for j in range(preprocessed_img.shape[1] - filter_shape[1]):
                 for k in range(3):
-                    output[i, j, k] = np.median(
-                        preprocessed_img[i: i + filter_shape[0], j: j + filter_shape[1], k])
-
+                    # o pixel em questao
+                    output[i,j,k] = np.median(preprocessed_img[i: i + filter_shape[0], j: j + filter_shape[1], k])
+        
         return self.image, preprocessed_img, output
 
     def apply_sobel_normalized_filter(self, root_path, image_path, zero_padding=True):

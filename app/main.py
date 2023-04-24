@@ -27,8 +27,6 @@ match root_profile:
         raise ValueError('root profile inválido!')
 
 # QUESTAO 1) Conversão RGB-YIQ-RGB
-
-
 def primeira_questao():
     # 1. Carregar imagem de teste
     orig_image = Image.open(root_path + '/assets/dancer.jpg')
@@ -40,7 +38,7 @@ def primeira_questao():
     yiq_image, yiq_image_array = converter.RGB_2_YIQ(image_obj=orig_image)
     yiq_image.show()
 
-    # 3. Aplicar conversão YIQ para RGB
+    # 3. Aplicar conversão YIQ para RGB (voltando)
     rgb_image, _ = converter.YIQ_2_RGB(yiq_image_array)
     rgb_image.show()
 
@@ -72,9 +70,12 @@ def segunda_questao():
     negative_Y_image = filter.apply_negative_filter_in_y(image_path=image_path)
     # negative_Y_image.show()
 
+    # 5. Em RGB simultaneamente
+    negative_rgb_image = filter.apply_negative_filter(image_path=image_path, R=True, G=True, B=True)
+    # negative_rgb_image.show()
+
+
 # QUESTAO 3) Filtros com extensão por zeros
-
-
 def terceira_questao():
     image_path = root_path + '/assets/dancer.jpg'
     original_image = Image.open(image_path)

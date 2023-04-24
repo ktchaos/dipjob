@@ -13,27 +13,24 @@ class Converter:
         I: 0.596 * R -  0.274 * G - 0.322 * B
         Q: 0.211 * R - 0.523 * G + 0.312 * B
         """
-        
         if image_path != None:
-            # Open Image and transform into a numpy array
+            # Abre a imagem e transforma em um array do numpy
             image = Image.open(image_path).convert("RGB")
             self.image = Image.open(image_path).convert("RGB")
         elif image_obj != None:
-
             image = image_obj.copy()
 
         arr_img = np.asarray(image)
         
-        # Makes a copy of the original image numpy array
+        # Faz uma cópia do array anterior mas transformado em float
         img_copy = arr_img.copy().astype(float)
-        
-        
-        # Matrix YIQ
+
+        # Matriz YIQ
         matrix_yiq = np.array([[0.299, 0.587, 0.114],
                       [0.596, -0.274, -0.322],
                       [0.211, -0.523, 0.312]])
         
-        # Dot operation
+        # Operador com ponto (.dot)
         
         #img_copy[:,:,0] = arr_img[:,:,0] * 0.299 + arr_img[:,:,1] * 0.587 + arr_img[:,:,2] * 0.114
         #img_copy[:,:,1] = arr_img[:,:,0] * 0.596 + arr_img[:,:,1] * -0.274 + arr_img[:,:,2] * -0.322
@@ -41,15 +38,11 @@ class Converter:
         
         img_copy = np.dot(arr_img, matrix_yiq.T.copy())
         
-        # Transform numpy array to Image
+        # Transforma o array em imagem para retorno da função
         img_transformed = Image.fromarray(img_copy.astype('uint8'))
         self.image_transformed = Image.fromarray(img_copy.astype('uint8'))
         
-        # Save Image
-        #img_transformed.save('yiq.png')
-        
-        
-        # Return Image, Image_Array
+        # Retorna a imagem e o array da imagem
         return img_transformed, img_copy
     
     def YIQ_2_RGB(self, arr_img):
@@ -59,32 +52,26 @@ class Converter:
         B: 1.0 * Y – 1.106 * I + 1.703 * Q
         """ 
      
-        # Matrix RGB
+        # Matriz RGB
         matrix_rgb = np.array([
                                [1.0, 0.956, 0.621],
                                [1.0, -0.272, -0.647],
                                [1.0, -1.106, 1.703]
                              ])
-        # Dot Operation
-        #img_copy = arr_img.copy()
+        
         #img_copy[:,:,0] = arr_img[:,:,0] * 1.0 + arr_img[:,:,1] * 0.956 + arr_img[:,:,2] * 0.621
         #img_copy[:,:,1] = arr_img[:,:,0] * 1.0 + arr_img[:,:,1] * -0.272 + arr_img[:,:,2] * -0.647
         #img_copy[:,:,2] = arr_img[:,:,0] * 1.0 + arr_img[:,:,1] * -1.106 + arr_img[:,:,2] * 1.703
         
         img_copy = np.dot(arr_img, matrix_rgb.T.copy())
         
-        
-        # setting RGB limits
+        # Estabelecendo os limites de RGB
         np.where(img_copy < 0, img_copy, 0)
         np.where(img_copy > 255, img_copy, 255)
-    
         
-        # Transform numpy array to Image
+        # Transformando array em imagem
         img_transformed = Image.fromarray(img_copy.astype('uint8'))
         self.image_transformed = Image.fromarray(img_copy.astype('uint8'))
         
-        # Save Image
-        #img_transformed.save('rgb.png')
-        
-        # Return Image, Image_Array
+        # Retorna a imagem processada
         return img_transformed, img_copy

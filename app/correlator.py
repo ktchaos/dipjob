@@ -9,26 +9,27 @@ class Correlator:
         self.filter = None
 
     def padding(self, horizontal_padding, vertical_padding):
-        padded_image = np.zeros(
-            (self.image.shape[0] + 2 * vertical_padding, self.image.shape[1] + 2 * horizontal_padding, 3))
-
+        padded_image = np.zeros((self.image.shape[0] + 2 * vertical_padding, self.image.shape[1] + 2 * horizontal_padding, 3))
+        
+        # Verifica os casos que não precisa adicionar verticalmente ou horizontalmente e centraliza a imagem
         if vertical_padding == 0:
             padded_image[:, horizontal_padding: -
                          horizontal_padding, :] = self.image
         elif horizontal_padding == 0:
-            padded_image[vertical_padding: -
-                         vertical_padding, :, :] = self.image
+            padded_image[vertical_padding : -vertical_padding, :, :] = self.image
         else:
-            padded_image[vertical_padding: -vertical_padding,
-                         horizontal_padding: -horizontal_padding, :] = self.image
-
+            padded_image[vertical_padding : -vertical_padding, horizontal_padding : -horizontal_padding, :] = self.image 
+    
+        # Retorna a imagem com a extensão por 0
         return padded_image
 
     def apply_correlation(self, image_path, filter_matrix, zero_padding=True):
         self.image = np.array(Image.open(image_path).convert('RGB'))
         self.filter = filter_matrix
-
+        
+        # numero de colunas que precisa ter para adicionar
         vertical_padding = self.filter.shape[0]//2
+        # numero de linhas que precisa ter
         horizontal_padding = self.filter.shape[1]//2
 
         if not horizontal_padding and not vertical_padding:

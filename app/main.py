@@ -5,6 +5,7 @@ from PIL import Image
 from converter import Converter
 from filter import Filter
 from correlator import Correlator
+from histogram import Histogram
 
 catarina_root_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app'
 arthur_root_path = '/Users/arthurruan/www/ufpb/dipjob/app'
@@ -103,6 +104,20 @@ def terceira_questao():
     transf_img = Image.fromarray(filter_img.astype('uint8'))
     transf_img.show()
 
+    # Aplicando Sobel normalizado
+    filter = Filter()
+    output = filter.apply_sobel_normalized_filter(root_path=root_path, image_path=image_path)
+    transf_img = Image.fromarray(output.astype('uint8'))
+    transf_img.show()
+
+    # Aplicando expansão de histograma no resultado do filtro de Sobel normalizado
+    h = Histogram()
+    gray_img = transf_img.convert('L')
+    gray_img.show()
+    output = h.expansion(image=gray_img, L=255)
+    transf_img = Image.fromarray(output.astype('uint8'))
+    transf_img.show()
+
 
 # QUESTAO 4) Filtro da MEDIANA sobre R, G e B
 def quarta_questao():
@@ -119,7 +134,6 @@ def quarta_questao():
 
 # execução principal do programa
 question = argv[2]
-
 
 def main():
     match question:

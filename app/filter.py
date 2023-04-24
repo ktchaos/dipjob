@@ -85,9 +85,6 @@ class Filter:
         output_x = output
         del output
 
-        transf_img_x = Image.fromarray(output_x.astype('uint8'))
-        transf_img_x.show()
-
         ## y
         filter_mask_y = np.loadtxt(root_path + "/filters/sobel-y.txt", encoding=None, delimiter=",")
         mask_y = np.array(filter_mask_y)
@@ -96,25 +93,18 @@ class Filter:
         output_y = output
         del output
 
-        transf_img_y = Image.fromarray(output_y.astype('uint8'))
-        transf_img_y.show()
-
         ## new image
-        w, h = transf_img_x.size
+        h = output_x.shape[0]
+        w = output_x.shape[1]
+        output = np.zeros((h, w, 3))
 
-        filtered = Image.new('RGB', (w, h))
-
-        for i in range(w):
-            for j in range(h):
-                values = []
-
+        for i in range(h):
+            for j in range(w):
                 for k in range(3):
                     value = sqrt(
-                        transf_img_x.getpixel((i, j))[k] ** 2 + transf_img_y.getpixel((i, j))[k] ** 2
+                        output_x[i, j, k] ** 2 + output_y[i, j, k] ** 2
                     )
                     value = int(min(value, 255))
-                    values.append(value)
-                
-                filtered.putpixel((i, j), (values[0], values[1], values[2]))
+                    output[i, j, k] = value
 
-        filtered.show()
+        return output

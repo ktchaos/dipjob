@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from sys import argv
 from PIL import Image
 
@@ -6,6 +7,7 @@ from converter import Converter
 from filter import Filter
 from correlator import Correlator
 from histogram import Histogram
+
 
 catarina_root_path = '/Users/catarinaserrano/Desktop/UFPB/PDI-TP-01/app'
 arthur_root_path = '/Users/arthurruan/www/ufpb/dipjob/app'
@@ -78,6 +80,28 @@ def terceira_questao():
     original_image = Image.open(image_path)
     original_image.show()
 
+    # Aplicando Box11x11
+    initial = initial = time.time()
+    c_1 = Correlator()
+    filter_mask = np.loadtxt(
+        root_path + "/filters/box_11_11.txt", encoding=None, delimiter=",")
+    matrix = np.array(filter_mask)
+    mask = matrix/matrix.size
+    _, _, output = c_1.apply_correlation(
+        image_path=image_path, filter_matrix=mask, zero_padding=True)
+    transf_img = Image.fromarray(output.astype('uint8'))
+    transf_img.show()
+    print("time taken Box11x11) = ", time.time()-initial)
+
+    # Aplicando Box11x1(Box1X11(image))
+    initial = initial = time.time()
+    filter = Filter()
+    output = filter.apply_box_one_dimensional_filter(
+        root_path=root_path, image_path=image_path)
+    transf_img = Image.fromarray(output.astype('uint8'))
+    transf_img.show()
+    print("time taken Box11x1(Box1X11(image)) = ", time.time()-initial)
+
     # Aplicando filtro da média (box)
     c_1 = Correlator()
     filter_mask = np.loadtxt(
@@ -106,7 +130,8 @@ def terceira_questao():
 
     # Aplicando Sobel normalizado
     filter = Filter()
-    output = filter.apply_sobel_normalized_filter(root_path=root_path, image_path=image_path)
+    output = filter.apply_sobel_normalized_filter(
+        root_path=root_path, image_path=image_path)
     transf_img = Image.fromarray(output.astype('uint8'))
     transf_img.show()
 
@@ -134,6 +159,7 @@ def quarta_questao():
 
 # execução principal do programa
 question = argv[2]
+
 
 def main():
     match question:
